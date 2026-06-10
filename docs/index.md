@@ -1,7 +1,5 @@
-# SRE Docs Demo felimonist
+# SRE Docs PodInfo felimonist
 
-Это учебный портал документации.
+Инструкция по восстановлению
 
-- [Runbook: рост 5xx](runbooks/http_5xx_rate_high.md)
-- [Runbook: здоровье сервиса](runbooks/service_healthcheck_failed.md)
-- [Runbook: демо podinfo](runbooks/podinfo_http_errors.md)
+- [Runbook: рост lateny](runbooks/podinfo-latency.md)
