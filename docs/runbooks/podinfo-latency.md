@@ -8,54 +8,55 @@
 
 1. Откройте дашборд **PodInfo Overview** в Grafana или запросите метрику в Prometheus.
 2. Убедитесь, что рост задержки наблюдается именно у подов PodInfo, а не вызван:
-   - общей сетевой деградацией;
-  - перегрузкой узла.
+   * общей сетевой деградацией;
+  * перегрузкой узла.
 3. Создайте инцидент в вашей системе (Grafana OnCall / ITSM):
-  - укажите время начала проблемы;
-  - обозначьте затронутый сервис;
-  - добавьте ссылку на этот runbook.
+  * укажите время начала проблемы;
+  * обозначьте затронутый сервис;
+  * добавьте ссылку на этот runbook.
 
 **Шаг 2. Проверка состояния подов и недавних изменений**
 
 ## Выполните быструю диагностику:
 
-- kubectl get pods -n podinfo -l app.kubernetes.io/name=podinfo
-- kubectl top pods -n podinfo
-- kubectl logs -n podinfo -l app.kubernetes.io/name=podinfo --tail=50
+* kubectl get pods -n podinfo -l app.kubernetes.io/name=podinfo
+* kubectl top pods -n podinfo
+* kubectl logs -n podinfo -l app.kubernetes.io/name=podinfo --tail=50
 
 Проверьте:
-- нет ли аварийных перезапусков (CrashLoopBackOff, OOMKilled);
-- уровень утилизации CPU и памяти;
-- ошибки в логах.
+* нет ли аварийных перезапусков (CrashLoopBackOff, OOMKilled);
+* уровень утилизации CPU и памяти;
+* ошибки в логах.
+
 Если проблема началась сразу после релиза, проверьте историю деплоев:
 
-kubectl rollout history deployment/frontend-podinfo -n podinfo
+* kubectl rollout history deployment/podinfo -n podinfo
 
 **Шаг 3. Выполнение безопасного шага восстановления**
 
 `Вариант А`. Если причина не очевидна, а задержка критична для пользователей, перезапустите все экземпляры:
 
-- kubectl rollout restart deployment/frontend-podinfo -n podinfo
+* kubectl rollout restart deployment/podinfo -n podinfo
 
 `Вариант Б`. Если есть уверенность, что причиной стал последний деплой, откатите изменения:
 
-- kubectl rollout undo deployment/frontend-podinfo -n podinfo
+* kubectl rollout undo deployment/podinfo -n podinfo
 После выполнения любого из действий зафиксируйте его в статусе инцидента.
 
 **Шаг 4. Проверка восстановления времени ответа**
 
-- Убедитесь, что 90‑й перцентиль задержки упал ниже 1 секунды и алерт перестал гореть:
-- проверьте дашборд PodInfo Overview;
-- либо выполните запрос PromQL:
-histogram_quantile(0.9, rate(http_request_duration_seconds_bucket{job="podinfo"}[5m]))
+* Убедитесь, что 90‑й перцентиль задержки упал ниже 1 секунды и алерт перестал гореть:
+* проверьте дашборд PodInfo Overview;
+* либо выполните запрос PromQL:
+histogram_quantile(0.9, rate(http_request_duration_seconds_bucket{container="podinfo"}[5m]))
 Если задержка не снизилась:
-- перейдите к углублённому анализу (трассировка запросов, проверка нагрузки на БД и внешние API);
-- привлеките разработчиков.
+* перейдите к углублённому анализу (трассировка запросов, проверка нагрузки на БД и внешние API);
+* привлеките разработчиков.
 
 **Шаг 5. Закрытие инцидента и документирование**
 
 В статусе инцидента укажите:
 
-- время обнаружения и восстановления;
-- выполненные действия (перезапуск, откат или иное);
-- корневую причину, если удалось выявить.
+* время обнаружения и восстановления;
+* выполненные действия (перезапуск, откат или иное);
+* корневую причину, если удалось выявить.

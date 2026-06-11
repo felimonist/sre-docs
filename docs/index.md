@@ -2,4 +2,4 @@
 
 Инструкция по восстановлению
 
-- [Runbook: рост lateny](runbooks/podinfo-latency.md)
+- [Runbook: Диагностика и устранение высокой латентности PodInfo](runbooks/podinfo-latency.md)
