@@ -2,4 +2,4 @@ site_name: "SRE Docs felimonist"
 nav:
 - Главная: index.md
 - Runbooks:
-  - Рост latency: runbooks/podinfo-latency.md
+  - High Latency: runbooks/podinfo-latency.md
