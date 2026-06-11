@@ -19,10 +19,10 @@
 
 ## Выполните быструю диагностику:
 
+- kubectl get pods -n podinfo -l app.kubernetes.io/name=podinfo
+- kubectl top pods -n podinfo
+- kubectl logs -n podinfo -l app.kubernetes.io/name=podinfo --tail=50
 
-kubectl get pods -n podinfo -l app.kubernetes.io/name=podinfo
-kubectl top pods -n podinfo
-kubectl logs -n podinfo -l app.kubernetes.io/name=podinfo --tail=50
 Проверьте:
 - нет ли аварийных перезапусков (CrashLoopBackOff, OOMKilled);
 - уровень утилизации CPU и памяти;
@@ -35,10 +35,11 @@ kubectl rollout history deployment/frontend-podinfo -n podinfo
 
 `Вариант А`. Если причина не очевидна, а задержка критична для пользователей, перезапустите все экземпляры:
 
-kubectl rollout restart deployment/frontend-podinfo -n podinfo
+- kubectl rollout restart deployment/frontend-podinfo -n podinfo
+
 `Вариант Б`. Если есть уверенность, что причиной стал последний деплой, откатите изменения:
 
-kubectl rollout undo deployment/frontend-podinfo -n podinfo
+- kubectl rollout undo deployment/frontend-podinfo -n podinfo
 После выполнения любого из действий зафиксируйте его в статусе инцидента.
 
 **Шаг 4. Проверка восстановления времени ответа**
@@ -54,6 +55,7 @@ histogram_quantile(0.9, rate(http_request_duration_seconds_bucket{job="podinfo"}
 **Шаг 5. Закрытие инцидента и документирование**
 
 В статусе инцидента укажите:
+
 - время обнаружения и восстановления;
 - выполненные действия (перезапуск, откат или иное);
 - корневую причину, если удалось выявить.
