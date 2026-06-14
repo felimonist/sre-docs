@@ -6,12 +6,7 @@
 
 **Шаг 1. Подтверждение проблемы**
 
-1. Откройте дашборд **PodInfo Overview** в Grafana или запросите метрику в Prometheus;
-
-```
-histogram_quantile(0.9, rate(http_request_duration_seconds_bucket{container="podinfo"}[5m]))
-```
-
+1. Откройте дашборд **PodInfo Overview** в Grafana или запросите метрику в Prometheus `http_request_duration_seconds_bucket`;
 2. Убедитесь, что рост задержки наблюдается именно у подов PodInfo, а не вызван:
 * общей сетевой деградацией;
 * перегрузкой узла.
@@ -29,6 +24,7 @@ kubectl top pods -n podinfo
 kubectl logs -n podinfo -l app.kubernetes.io/name=podinfo --tail=50
 ```
 ***Проверьте:***
+
 * нет ли аварийных перезапусков (CrashLoopBackOff, OOMKilled);
 * уровень утилизации CPU и памяти;
 * ошибки в логах.
@@ -58,12 +54,14 @@ kubectl rollout undo deployment/podinfo -n podinfo
 histogram_quantile(0.9, rate(http_request_duration_seconds_bucket{container="podinfo"}[5m]))
 ```
 ***Если задержка не снизилась:***
+
 * перейдите к углублённому анализу (трассировка запросов, проверка нагрузки на БД и внешние API);
 * привлеките разработчиков.
 
 **Шаг 5. Закрытие инцидента и документирование**
 
 ***В статусе инцидента укажите:***
+
 * время обнаружения и восстановления;
 * выполненные действия (перезапуск, откат или иное);
 * корневую причину, если удалось выявить.
