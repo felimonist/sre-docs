@@ -7,22 +7,20 @@
 **Шаг 1. Подтверждение проблемы**
 
 1. Откройте дашборд **PodInfo Overview** в Grafana или запросите метрику в Prometheus `http_request_duration_seconds_bucket`;
-2. Убедитесь, что рост задержки наблюдается именно у подов PodInfo, а не вызван:
-
-* общей сетевой деградацией;
+2. Убедитесь, что рост задержки наблюдается именно у подов PodInfo, а не вызван:  
+* общей сетевой деградацией;  
 * перегрузкой узла.
-3. Создайте инцидент в вашей системе (Grafana OnCall / ITSM):
-
-* укажите время начала проблемы;
-* обозначьте затронутый сервис;
-* добавьте ссылку на этот runbook.
+3. Создайте инцидент в вашей системе (Grafana OnCall / ITSM):  
+* укажите время начала проблемы;  
+* обозначьте затронутый сервис;  
+* добавьте ссылку на этот runbook.  
 
 **Шаг 2. Проверка состояния подов и недавних изменений**
 
 ***Выполните быструю диагностику:***
 ```
 kubectl get pods -n podinfo -l app.kubernetes.io/name=podinfo
-kubectl top pods -n podinfo
+kubectl top pods -n podinfo --sort-by <cpu or memory>
 kubectl logs -n podinfo -l app.kubernetes.io/name=podinfo --tail=50
 ```
 ***Проверьте:***
